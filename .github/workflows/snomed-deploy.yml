@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - snomed-master
+      - BS-42-test
 
   workflow_dispatch:
     inputs:
@@ -44,7 +45,7 @@ jobs:
             aws ssm send-command --document-name "AWS-RunShellScript" \
             --targets $SSM_COMMAND_TARGET_JSON \
             --parameters '{"workingDirectory":["${{ secrets.SNOMED_WORKING_DIRECTORY }}"],"commands":["bash deploy.sh"]}' \
-            --region ${{ secrets.SNOMED_AWS_REGION }} 
+            --region ${{ secrets.SNOMED_AWS_REGION }} | jq '.Command | {CommandId: .CommandId, Status: .Status}'
           fi
 
   notification:
